@@ -4,5 +4,8 @@
     <string name="app_name">Pull List</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-
+    <string name="main_no_items">No items to display.</string>
+	<string name="imgDescription">Comic Image</string>
+	<string name="xmlFeed">http://feeds.feedburner.com/ComixologyDigitalComics</string>
+	
 </resources>

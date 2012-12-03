@@ -7,34 +7,24 @@ import com.pulllist.listeners.ListListener;
 import com.pulllist.util.RssReader;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
  
 public class MainActivity extends Activity {
- 
+	
+	private ProgressDialog m_ProgressDialog = null; 
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //final ProgressBar progress = (ProgressBar)findViewById(R.id.progress);
-        //final TextView    textview = (TextView)findViewById(R.id.text);
         
-        //progress.setVisibility(View.GONE);
-        //textview.setVisibility(View.GONE);
-        
+        //Read RSS Feed
         new RSSRead(this).execute();
-        
-//			Context context = getApplicationContext();
-//			CharSequence text = "Hello toast! " + temp.rssItems;
-//			int duration = Toast.LENGTH_LONG;
-//
-//			Toast toast = Toast.makeText(context, text, duration);
-//			toast.show();
     }
     
     private class RSSRead extends AsyncTask<Void, Integer, Void>{
@@ -51,29 +41,26 @@ public class MainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             // Getting reference to the TextView tv_counter of the layout activity_main
-
+        	m_ProgressDialog = ProgressDialog.show(MainActivity.this,    
+                    "Please wait...", "Retrieving data ...", true);
         }
  
         // A callback method executed on non UI thread, invoked after
         // onPreExecute method if exists
         @Override
         protected Void doInBackground(Void... params) {
-        	/* Load timezone. this is very slow - may take up to 3 seconds. */
-          //publishProgress();
-          
-          
-          
         	try {
     			// Create RSS reader
-    			RssReader rssReader = new RssReader("http://feeds.feedburner.com/ComixologyDigitalComics");
+    			//RssReader rssReader = new RssReader(parent.getString(R.string.xmlFeed));
+        		RssReader rssReader = new RssReader("http://feeds.feedburner.com/ComixologyDigitalComics?fmt=xml");
+    			
     			// Get a ListView from main view
     			itcItems = (ListView) findViewById(R.id.listMainView);
-    			
+
     			rssItems = rssReader.getItems();
     			
     			// Create a list adapter
     			adapter = new ArrayAdapter<RssItem>(parent,android.R.layout.simple_list_item_1, rssItems);
-    			
     			
     		} catch (Exception e) {
     			Log.e("ITCRssReader", e.getMessage());
@@ -86,7 +73,20 @@ public class MainActivity extends Activity {
         // from doInBackground() method
         @Override
         protected void onProgressUpdate(Integer... values) {
- 
+        		int val = values[0];
+        		switch(val){
+        		case(1):
+        			m_ProgressDialog.setMessage("Turning on the Bat Signal...");
+        			break;
+        		case(2):
+        			m_ProgressDialog.setMessage("Assembling the Avengers...");
+        			break;
+        		case(3):
+        			m_ProgressDialog.setMessage("Calming down the Hulk...");
+        			break;
+        		default:
+        			break;
+        		}
         }
  
         // A callback method executed on UI thread, invoked after the completion of the task
@@ -97,6 +97,7 @@ public class MainActivity extends Activity {
 			
 			// Set list view item click listener
 			itcItems.setOnItemClickListener(new ListListener(rssItems, parent));
+			m_ProgressDialog.dismiss();
         }
        
     }
