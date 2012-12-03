@@ -90,7 +90,12 @@ public class RssParseHandler extends DefaultHandler {
 			}
 		} else if(parsingPubDate){
 			if(currentItem != null){
-				currentItem.setPubDate(new String(ch, start, length));
+				if(length > 20){
+					currentItem.setPubDate(new String(ch, start, length-15)); //Trim off extra date info
+				}
+				else{
+					currentItem.setPubDate(new String(ch, start, length));
+				}
 			}
 		} else if(parsingDescription){
 			if(currentItem != null){
