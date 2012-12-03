@@ -13,6 +13,10 @@ public class RssItem {
 	private String title;
 	// item link
 	private String link;
+	private String category;
+	private String pubDate;
+	private String imgURL;
+	private String description;
 
 	public String getTitle() {
 		return title;
@@ -34,5 +38,36 @@ public class RssItem {
 	public String toString() {
 		return title;
 	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	
+	public String getCategory() {
+		return category;
+	}
+	
+	public void setPubDate(String pubDate) {
+		this.pubDate = pubDate;
+	}
+	
+	public String getPubDate() {
+		return pubDate;
+	}
+	
+	public void setImgURL(String imgURL) {
+		this.imgURL = imgURL;
+	}
+	
+	public String getImgURL() {
+		return imgURL;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
 }
