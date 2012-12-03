@@ -6,6 +6,7 @@
     <string name="menu_settings">Settings</string>
     <string name="main_no_items">No items to display.</string>
 	<string name="imgDescription">Comic Image</string>
-	<string name="xmlFeed">http://feeds.feedburner.com/ComixologyDigitalComics</string>
+	<string name="xmlFeed">http://feeds.feedburner.com/ComixologyDigitalComics?format=xml</string>
+	<string name="comicImage">Comic Image</string>
 	
 </resources>

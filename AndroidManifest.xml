@@ -25,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:label="Single Menu Item"
+            android:name=".SingleMenuItemActivity" >
+        </activity>
         
     </application>
     

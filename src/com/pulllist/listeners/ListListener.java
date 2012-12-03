@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.pulllist.SingleMenuItemActivity;
 import com.pulllist.data.RssItem;
 
 /**
@@ -24,6 +25,12 @@ public class ListListener implements OnItemClickListener {
 	// Calling activity reference
 	Activity activity;
 	
+	// XML node keys
+	static final String KEY_TITLE = "title";
+	static final String KEY_PUB = "publisher";
+	static final String KEY_DESC = "description";
+	static final String KEY_PUBDATE = "pubDate";
+	
 	public ListListener(List<RssItem> aListItems, Activity anActivity) {
 		listItems = aListItems;
 		activity  = anActivity;
@@ -33,11 +40,25 @@ public class ListListener implements OnItemClickListener {
 	 * Start a browser with url from the rss item.
 	 */
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-		Intent i = new Intent(Intent.ACTION_VIEW);
-		i.setData(Uri.parse(listItems.get(pos).getLink()));
+		//Links to website
+		//Intent i = new Intent(Intent.ACTION_VIEW);
+		//i.setData(Uri.parse(listItems.get(pos).getLink()));
 	
-		activity.startActivity(i);
+		//activity.startActivity(i);
 		
+		 // getting values from selected ListItem
+        String title = listItems.get(pos).getTitle();
+        String category = listItems.get(pos).getCategory();
+        String description = listItems.get(pos).getDescription();
+        String pubDate = listItems.get(pos).getPubDate();
+
+        // Starting new intent
+        Intent in = new Intent(activity.getApplicationContext(), SingleMenuItemActivity.class);
+        in.putExtra(KEY_TITLE, title);
+        in.putExtra(KEY_PUB, category);
+        in.putExtra(KEY_DESC, description);
+        in.putExtra(KEY_PUBDATE, pubDate);
+        activity.startActivity(in);
 	}
 	
 }
