@@ -4,7 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
+//import android.net.Uri;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,13 +27,14 @@ public class ListListener implements OnItemClickListener {
 	
 	// XML node keys
 	static final String KEY_TITLE = "title";
+	static final String KEY_IMG = "img";
 	static final String KEY_PUB = "publisher";
 	static final String KEY_DESC = "description";
 	static final String KEY_PUBDATE = "pubDate";
 	
-	public ListListener(List<RssItem> aListItems, Activity anActivity) {
+	public ListListener(List<RssItem> aListItems, Activity parseRSS) {
 		listItems = aListItems;
-		activity  = anActivity;
+		activity  = parseRSS;
 	}
 	
 	/**
@@ -51,10 +52,12 @@ public class ListListener implements OnItemClickListener {
         String category = listItems.get(pos).getCategory();
         String description = listItems.get(pos).getDescription();
         String pubDate = listItems.get(pos).getPubDate();
+        String imgURL = listItems.get(pos).getImgURL();
 
         // Starting new intent
         Intent in = new Intent(activity.getApplicationContext(), SingleMenuItemActivity.class);
         in.putExtra(KEY_TITLE, title);
+        in.putExtra(KEY_IMG, imgURL);
         in.putExtra(KEY_PUB, category);
         in.putExtra(KEY_DESC, description);
         in.putExtra(KEY_PUBDATE, pubDate);

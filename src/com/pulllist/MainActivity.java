@@ -8,32 +8,37 @@ import com.pulllist.util.RssReader;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
  
 public class MainActivity extends Activity {
 	
 	private ProgressDialog m_ProgressDialog = null; 
-	
+    private ListView itcItems;
+    private List<RssItem> rssItems;
+    private LazyAdapter adapter;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+		
         //Read RSS Feed
         new RSSRead(this).execute();
     }
     
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.activity_main);
+    }
+    
     private class RSSRead extends AsyncTask<Void, Integer, Void>{
         Activity parent;
-        ListView itcItems;
-        List<RssItem> rssItems;
-        ArrayAdapter<RssItem> adapter;
         
-    	RSSRead(MainActivity parent){
+    	RSSRead(Activity parent){
     		this.parent = parent;
     	}
         
@@ -41,7 +46,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             // Getting reference to the TextView tv_counter of the layout activity_main
-        	m_ProgressDialog = ProgressDialog.show(MainActivity.this,    
+        	m_ProgressDialog = ProgressDialog.show(parent,    
                     "Please wait...", "Retrieving data ...", true);
         }
  
@@ -51,8 +56,8 @@ public class MainActivity extends Activity {
         protected Void doInBackground(Void... params) {
         	try {
     			// Create RSS reader
-    			//RssReader rssReader = new RssReader(parent.getString(R.string.xmlFeed));
-        		RssReader rssReader = new RssReader("http://feeds.feedburner.com/ComixologyDigitalComics?fmt=xml");
+    			RssReader rssReader = new RssReader(parent.getString(R.string.xmlFeed));
+        		//RssReader rssReader = new RssReader("http://feeds.feedburner.com/ComixologyDigitalComics?fmt=xml");
     			
     			// Get a ListView from main view
     			itcItems = (ListView) findViewById(R.id.listMainView);
@@ -60,7 +65,8 @@ public class MainActivity extends Activity {
     			rssItems = rssReader.getItems();
     			
     			// Create a list adapter
-    			adapter = new ArrayAdapter<RssItem>(parent,android.R.layout.simple_list_item_1, rssItems);
+    			//adapter = new ArrayAdapter<RssItem>(parent,android.R.layout.simple_list_item_1, rssItems);
+    			adapter = new LazyAdapter(parent, rssItems);
     			
     		} catch (Exception e) {
     			Log.e("ITCRssReader", e.getMessage());
@@ -102,59 +108,3 @@ public class MainActivity extends Activity {
        
     }
 }
-
-//package com.pulllist;
-//
-//import android.app.Activity;
-//import android.os.AsyncTask;
-//import android.os.Bundle;
-//import android.os.StrictMode;
-//import android.util.Log;
-//import android.view.View;
-//import android.widget.ArrayAdapter;
-//import android.widget.ListView;
-//
-//import com.pulllist.data.RssItem;
-//import com.pulllist.listeners.ListListener;
-//import com.pulllist.util.RssReader;
-//
-///**
-// * Main application activity.
-// * 
-// * @author ITCuties
-// *
-// */
-//public class MainActivity extends Activity {
-//	/** 
-//	 * This method creates main application view
-//	 */
-//	@Override
-//	public void onCreate(Bundle savedInstanceState) {
-//		super.onCreate(savedInstanceState);
-//		// Set view
-//		setContentView(R.layout.activity_main);
-//		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//		StrictMode.setThreadPolicy(policy);
-//		
-//		try {
-//			// Create RSS reader
-//			RssReader rssReader = new RssReader("http://feeds.feedburner.com/ComixologyDigitalComics");
-//			// Get a ListView from main view
-//			ListView itcItems = (ListView) findViewById(R.id.listMainView);
-//			
-//			// Create a list adapter
-//			ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(this,android.R.layout.simple_list_item_1, rssReader.getItems());
-//			// Set list adapter for the ListView
-//			itcItems.setAdapter(adapter);
-//			
-//			// Set list view item click listener
-//			itcItems.setOnItemClickListener(new ListListener(rssReader.getItems(), this));
-//			
-//		} catch (Exception e) {
-//			Log.e("ITCRssReader", e.getMessage());
-//		}
-//		
-//	}
-//	
-//	
-//}
