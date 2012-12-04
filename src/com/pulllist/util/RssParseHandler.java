@@ -26,10 +26,10 @@ public class RssParseHandler extends DefaultHandler {
 	private boolean parsingTitle;
 	// Parsing link indicator
 	private boolean parsingLink;
-	private boolean parsingImg; //Still needs to be done
 	private boolean parsingCategory;
 	private boolean parsingPubDate;
 	private boolean parsingDescription;
+	private boolean parsingContentEncoded;
 	
 	public RssParseHandler() {
 		rssItems = new ArrayList<RssItem>();
@@ -53,7 +53,14 @@ public class RssParseHandler extends DefaultHandler {
 			parsingDescription = true;
 		} else if("pubDate".equals(qName)){
 			parsingPubDate = true;
-		} 
+		} else if("content:encoded".equals(qName)){
+			parsingContentEncoded = true;
+		}
+		else if("img".equalsIgnoreCase(qName) && parsingContentEncoded){
+			if(currentItem!=null){
+				currentItem.setImgURL(attributes.getValue("src"));
+			}
+		}
 	}
 	
 	@Override
@@ -71,7 +78,9 @@ public class RssParseHandler extends DefaultHandler {
 			parsingDescription = false;
 		} else if("pubDate".equals(qName)){
 			parsingPubDate = false;
-		} 
+		} else if("content:encoded".equals(qName)){
+			parsingContentEncoded = false;
+		}
 	}
 	
 	@Override
@@ -100,6 +109,26 @@ public class RssParseHandler extends DefaultHandler {
 		} else if(parsingDescription){
 			if(currentItem != null){
 				currentItem.setDescription(new String(ch, start, length));
+			}
+		} else if(parsingContentEncoded){
+			if(currentItem != null){
+				
+				//Get everything after content encoded
+				String junk = new String(ch);
+				
+				//Example url
+				String url = "http://iphone.comixology.com/covers/thumbnails/OCT120587_1_t.jpg";
+				
+				//Find where it starts
+				int imgUrlStart = junk.indexOf("http://iphone.comixology.com/covers/thumbnails");
+				
+				//If it was found...
+				if(imgUrlStart > 0){
+					
+					//Get the url, move on
+					currentItem.setImgURL(new String(ch, imgUrlStart, url.length()));
+					parsingContentEncoded = false;
+				}
 			}
 		}
 	}
